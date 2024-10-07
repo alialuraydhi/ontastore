@@ -11,4 +11,14 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     price = models.IntegerField()
     description = models.TextField()
-    
+     
+class project(models.models):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+
+
+class employeed(models.models):
+    departement = models.CharField(max_length=180)
+    project  = models.ManyToManyField(project)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
