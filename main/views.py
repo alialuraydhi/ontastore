@@ -14,15 +14,17 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags
 
-# Create your views here.
 @login_required(login_url='/login')
 def show_main(request):
+    last_login = request.COOKIES.get('last_login', 'Never')
+    if last_login != 'Never':
+        last_login = datetime.datetime.strptime(last_login, "%Y-%m-%d %H:%M:%S.%f")
 
     context = {
         'name': 'Ali Al-uraydhi',
         'class': 'PBP A',
         'npm': '2306275992',
-        'last_login': request.COOKIES['last_login'],
+        'last_login': last_login.strftime("%B %d, %Y %H:%M:%S") if last_login != 'Never' else 'Never',
     }
 
     return render(request, "main.html", context)
@@ -73,9 +75,11 @@ def login_user(request):
 
         if form.is_valid():
             user = form.get_user()
+            # Set the last_login cookie to the previous last_login time if it exists
+            last_login = user.last_login if user.last_login else datetime.datetime.now()
             login(request, user)
             response = HttpResponseRedirect(reverse("main:show_main"))
-            response.set_cookie('last_login', str(datetime.datetime.now()))
+            response.set_cookie('last_login', str(last_login))
             return response
         else:
             messages.error(request, "Invalid username or password. Please try again.")

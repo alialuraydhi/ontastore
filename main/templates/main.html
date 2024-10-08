@@ -3,81 +3,177 @@
 
 {% block meta %}
 <title>Onta Store</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
 {% endblock meta %}
 {% block content %}
 {% include 'navbar.html' %}
-<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gray-100 flex flex-col">
-  <div class="p-2 mb-6 relative">
-    <div class="relative grid grid-cols-1 z-30 md:grid-cols-3 gap-8">
-      {% include "card_info.html" with title='NPM' value=npm %}
-      {% include "card_info.html" with title='Name' value=name %}
-      {% include "card_info.html" with title='Class' value=class %}
+<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-indigo-100 flex flex-col">
+
+  <!-- Add centered plain text for Name, NPM, and Class with shiny effect and outer glow -->
+  
+
+  <div class="px-3 mb-4">
+    <div class="flex items-center py-2 px-4 w-fit mx-auto">
+      <p class="text-[1.875rem] font-bold text-indigo-500">Onta Store.&nbsp;</p>
+      <p id="tagline" class="text-[1.875rem] font-normal text-indigo-400"></p>  <!-- Tagline text -->
     </div>
-    <div class="w-full px-6  absolute top-[44px] left-0 z-20 hidden md:flex">
-      <div class="w-full min-h-4 bg-indigo-700">
+
+    <div class="flex rounded-[15px] items-center bg-indigo-600 py-2 px-4 w-fit mx-auto">
+      <h1 class="text-white text-center text-sm">
+        <span class="font-bold">Last Login:</span> {{ last_login }}
+      </h1>    
+    </div>
+  </div>
+  
+  <div class="flex justify-end mr-[7rem] mb-6">
+      <a href="{% url 'main:create_product' %}" class="w-auto flex justify-center py-2 px-4 text-sm font-medium rounded-[15px] text-black bg-white hover:bg-gray-200 focus:outline-none focus:ring-0 transition duration-200 ease-in-out
+      hover:shadow-[0px_0px_15px_5px_rgba(255,255,255,0.4)]">
+          Add New Product
+      </a>
+      <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="w-auto ml-4 flex justify-center py-2 px-4 text-sm font-medium rounded-[15px] text-black bg-white hover:bg-gray-200 focus:outline-none focus:ring-0 transition duration-200 ease-in-out
+      hover:shadow-[0px_0px_15px_5px_rgba(255,255,255,0.4)]" onclick="showModal();">
+        Add New Product by AJAX
+      </button>
+  </div>
+  
+  <div id="product_cards"></div>
+  <div id="crudModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
+    <div id="crudModalContent" class="relative bg-gray-200 rounded-[25px] shadow-lg w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-4 sm:mx-0 transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
+      <!-- Modal header -->
+      <div class="flex items-center justify-between p-4 border-b rounded-t">
+        <h3 class="text-xl font-semibold text-gray-900">
+          Add New Product
+        </h3>
+        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" id="closeModalBtn">
+          <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+          </svg>
+          <span class="sr-only">Close modal</span>
+        </button>
       </div>
-    </div>
-    <div class="h-full w-full py-6  absolute top-0 left-0 z-20 md:hidden flex ">
-      <div class="h-full min-w-4 bg-indigo-700 mx-auto">
-      </div>
-    </div>
-</div>
-    <div class="px-3 mb-4">
-      <div class="flex rounded-md items-center bg-indigo-600 py-2 px-4 w-fit">
-        <h1 class="text-white text-center">Last Login: {{last_login}}</h1>
-      </div>
-    </div>
-    <a href="{% url 'main:create_product' %}" class="bg-indigo-400 hover:bg-indigo-400 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 mx-4 ">
-      Add New Product
-    </a>
-    <button data-modal-target="crudModal" data-modal-toggle="crudModal" class="btn bg-indigo-700 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105" onclick="showModal();">
-      Add New Product by AJAX
-    </button>
-    
-    <div id="product_cards"></div>
-    <div id="crudModal" tabindex="-1" aria-hidden="true" class="hidden fixed inset-0 z-50 w-full flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-x-hidden overflow-y-auto transition-opacity duration-300 ease-out">
-      <div id="crudModalContent" class="relative bg-white rounded-lg shadow-lg w-5/6 sm:w-3/4 md:w-1/2 lg:w-1/3 mx-4 sm:mx-0 transform scale-95 opacity-0 transition-transform transition-opacity duration-300 ease-out">
-        <!-- Modal header -->
-        <div class="flex items-center justify-between p-4 border-b rounded-t">
-          <h3 class="text-xl font-semibold text-gray-900">
-            Add New Product
-          </h3>
-          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" id="closeModalBtn">
-            <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-            </svg>
-            <span class="sr-only">Close modal</span>
-          </button>
-        </div>
-        <!-- Modal body -->
-        <div class="px-6 py-4 space-y-6 form-style">
-          <form id="moodEntryForm">
-            <div class="mb-4">
-              <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-              <input type="text" id="name" name="name" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Enter your mood" required>
+      <!-- Modal body -->
+      <div class="px-6 py-4 space-y-6 form-style">
+          <form id="productForm" enctype="multipart/form-data">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Name -->
+            <div class="space-y-4">
+              <div class="mb-4">
+                  <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                  <input type="text" id="name" name="name" class="block w-full px-3 py-2 text-center border border-[#05e500] hover:border-white text-black bg-white rounded-[15px] focus:outline-white focus:outline-[2px] focus:outline-offset-0 focus:ring-0 focus:bg-opacity-100 focus:placeholder-opacity-100 text-opacity-50 transition duration-200 ease-in-out shadow-lg focus:text-opacity-100 focus:shadow-[0px_0px_10px_5px_rgba(255,255,255,0.4)]" placeholder="Enter product name" required>
+              </div>
+              
+              <!-- Price -->
+              <div class="mb-4">
+                  <label for="price" class="block text-sm font-medium text-gray-700 mb-2">Price</label>
+                  <input type="number" id="price" name="price" class="block w-full px-3 py-2 text-center border border-[#05e500] hover:border-white text-black bg-white rounded-[15px] focus:outline-white focus:outline-[2px] focus:outline-offset-0 focus:ring-0 focus:bg-opacity-100 focus:placeholder-opacity-100 text-opacity-50 transition duration-200 ease-in-out shadow-lg focus:text-opacity-100 focus:shadow-[0px_0px_10px_5px_rgba(255,255,255,0.4)]" placeholder="Enter product price" required>
+              </div>
+              
+              <!-- Quantity -->
+              <div class="mb-4">
+                  <label for="quantity" class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                  <input type="number" id="quantity" name="quantity" class="block w-full px-3 py-2 text-center border border-[#05e500] hover:border-white text-black bg-white rounded-[15px] focus:outline-white focus:outline-[2px] focus:outline-offset-0 focus:ring-0 focus:bg-opacity-100 focus:placeholder-opacity-100 text-opacity-50 transition duration-200 ease-in-out shadow-lg focus:text-opacity-100 focus:shadow-[0px_0px_10px_5px_rgba(255,255,255,0.4)]" min="1" placeholder="Enter available quantity" required>
+              </div>
             </div>
-            <div class="mb-4">
-              <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-              <textarea id="description" name="description" rows="3" class="mt-1 block w-full h-52 resize-none border border-gray-300 rounded-md p-2 hover:border-indigo-700" placeholder="Describe your feelings" required></textarea>
+            
+            <div class="space-y-4">
+              <!-- Description -->
+              <div class="mb-4">
+                  <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                  <textarea id="description" name="description" rows="3" class="block w-full px-3 py-2 text-center border border-[#05e500] hover:border-white text-black bg-white rounded-[15px] focus:outline-white focus:outline-[2px] focus:outline-offset-0 focus:ring-0 focus:bg-opacity-100 focus:placeholder-opacity-100 text-opacity-50 transition duration-200 ease-in-out shadow-lg focus:text-opacity-100 focus:shadow-[0px_0px_10px_5px_rgba(255,255,255,0.4)]" placeholder="Enter product description" required></textarea>
+              </div>
+
+              <!-- Image -->
+              <div class="mb-4">
+                  <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
+                  <input type="file" id="image" name="image" class="block w-full px-3 py-2 text-center border border-[#05e500] hover:border-white text-black bg-white rounded-[15px] focus:outline-white focus:outline-[2px] focus:outline-offset-0 focus:ring-0 focus:bg-opacity-100 focus:placeholder-opacity-100 text-opacity-50 transition duration-200 ease-in-out shadow-lg focus:text-opacity-100 focus:shadow-[0px_0px_10px_5px_rgba(255,255,255,0.4)]" accept="image/*">
+              </div>
             </div>
-            <div class="mb-4">
-              <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
-              <input type="number" id="price" name="price" min="1" max="10" class="mt-1 block w-full border border-gray-300 rounded-md p-2 hover:border-indigo-700" required>
-            </div>
+          </div>
+
           </form>
-        </div>
-        <!-- Modal footer -->
-        <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2 p-6 border-t border-gray-200 rounded-b justify-center md:justify-end">
-          <button type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg" id="cancelButton">Cancel</button>
-          <button type="submit" id="submitMoodEntry" form="moodEntryForm" class="bg-indigo-700 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg">Save</button>
-        </div>
+      </div>
+      <!-- Modal footer -->
+      <div class="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2 p-6 border-t border-gray-200 rounded-b justify-center md:justify-end">
+        <button type="button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg" id="cancelButton">Cancel</button>
+        <button type="submit" id="submitproduct" form="productForm" class="bg-indigo-700 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg">Save</button>
       </div>
     </div>
+  </div>
+
 </div>
 
+<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-3 bg-white rounded-[20px] shadow-lg text-center text-black flex items-center justify-center">
+  <p class="text-sm flex flex-col items-center justify-center">
+    <span class="font-bold">{{ name }}</span>
+    <span class="font-normal">{{ npm }} - {{ class }}</span>
+  </p>
+</div>
+
+
+<!-- Custom CSS for shiny effect and outer glow -->
+<style>
+  .text-gradient-shine {
+    background: linear-gradient(90deg, #ffffff, #888888, #ffffff);
+    background-size: 200%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: shine 2.5s linear infinite;
+    font-weight: bold; /* Ensure boldness */
+  }
+
+  @keyframes shine {
+    0% {
+      background-position: 0%;
+    }
+    100% {
+      background-position: 200%;
+    }
+  }
+</style>
+
 <script>
+  // Define the tagline options
+  const taglines = ["Gacor.", "Mantap."];
+  
+  // Variables for typing effect
+  let currentTagline = 0; // Index for taglines
+  let index = 0; // Character index
+  let isDeleting = false; // If the text is being deleted
+  const speed = 100; // Typing/backspacing speed
+  const pause = 1500; // Pause before backspacing
+
+  function typeTagline() {
+    const taglineElement = document.getElementById("tagline");
+    const currentText = taglines[currentTagline];
+
+    // Typing or deleting logic
+    if (isDeleting) {
+      taglineElement.innerText = currentText.substring(0, index--) + " "; // Leave space during backspacing
+      if (index < 0) {
+        isDeleting = false;
+        currentTagline = (currentTagline + 1) % taglines.length; // Move to the next tagline
+      }
+    } else {
+      taglineElement.innerText = currentText.substring(0, index++);
+      if (index > currentText.length) {
+        isDeleting = true;
+        setTimeout(typeTagline, pause); // Pause before starting backspace
+        return;
+      }
+    }
+
+    setTimeout(typeTagline, speed);
+  }
+
+  // Initialize typing effect
+  document.addEventListener("DOMContentLoaded", () => {
+    typeTagline();
+  });
+
   async function getProducts(){
-      return fetch("{% url 'main:show_json' %}").then((res) => res.json())
+    return fetch("{% url 'main:show_json' %}").then((res) => res.json())
   }
 
   async function refreshProducts() {
@@ -100,45 +196,62 @@
       Products.forEach((item) => {
           const name = DOMPurify.sanitize(item.fields.name);
           const description = DOMPurify.sanitize(item.fields.description);
+          const imageUrl = item.fields.image ? `/media/${item.fields.image}` : '/path/to/placeholder-image.png';
           htmlString += `
-          <div class="relative break-inside-avoid">
-            <div class="absolute top-2 z-10 left-1/2 -translate-x-1/2 flex items-center -space-x-2">
-              <div class="w-[3rem] h-8 bg-gray-200 rounded-md opacity-80 -rotate-90"></div>
-              <div class="w-[3rem] h-8 bg-gray-200 rounded-md opacity-80 -rotate-90"></div>
+          <div class="relative break-inside-avoid" onclick="openPopup('${name}', ${item.fields.quantity}, '${item.fields.price}', '${description}', '${imageUrl}', '${item.pk}')">
+          <div class="relative top-5 bg-white shadow-lg mb-6 break-inside-avoid flex flex-col items-center border-2 border-gray-200 hover:shadow-[0px_0px_15px_5px_rgba(255,255,255,0.4)] hover:transform hover:scale-105 transition-transform duration-300 cursor-pointer"
+              style="width: 300px; height: 320px;"> <!-- Fixed height for the card -->
+
+            <div class="bg-gray-200 w-[100%] h-[100%] flex justify-center items-center mt-4 overflow-hidden">
+            ${item.fields.image ? `<img src="${imageUrl}" alt="Product Image" class="rounded-lg object-cover w-full h-full" />` : `<div class="flex items-center justify-center w-full h-full text-gray-500">No Image Available</div>`}
             </div>
-            <div class="relative top-5 bg-indigo-100 shadow-md rounded-lg mb-6 break-inside-avoid flex flex-col border-2 border-indigo-300 transform rotate-1 hover:rotate-0 transition-transform duration-300">
-              <div class="bg-indigo-200 text-gray-800 p-4 rounded-t-lg border-b-2 border-indigo-300">
-                <h3 class="font-bold text-xl mb-2">${item.fields.name}</h3>
-                <p class="text-gray-600">${item.fields.description}</p>
+
+            <!-- Product Name and Price -->
+            <div class="p-3 text-center w-full h-[40%] flex flex-col justify-end">
+              <h3 class="font-bold text-lg mb-2 text-gray-800">${name}</h3>
+              <div class="flex justify-center items-center space-x-2">
+                <span class="bg-gray-100 rounded-full px-3 py-1 text-gray-800 text-sm">${item.fields.price}</span>
+                <span class="text-gray-600 text-xs">IDR</span>
               </div>
-              <div class="p-4">
-                <p class="font-semibold text-lg mb-2">My Products</p> 
-                <p class="text-gray-700 mb-2">
-                  <span class="bg-[linear-gradient(to_bottom,transparent_0%,transparent_calc(100%_-_1px),#CDC1FF_calc(100%_-_1px))] bg-[length:100%_1.5rem] pb-1">{{product.feelings}}</span>
-                </p>
-                <div class="mt-4">
-                  <p class="text-gray-700 font-semibold mb-2">Price</p>
-                  <div class="flex items-center">
-                    <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-indigo-600 bg-indigo-200">
-                      ${item.fields.description} IDR
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="absolute top-0 -right-4 flex space-x-1">
-              <a href="/edit-mood/${item.pk}" class="bg-yellow-500 hover:bg-yellow-600 text-white rounded-full p-2 transition duration-300 shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                </svg>
-              </a>
-              <a href="/delete_product/${item.pk}" class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition duration-300 shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                </svg>
-              </a>
             </div>
           </div>
+
+          <!-- Popup Modal for Product Details -->
+          <div id="productPopup-${item.pk}" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onclick="closePopup('${item.pk}')">
+            <!-- Modal Content -->
+            <div class="bg-white p-6 shadow-lg max-w-md w-full mx-auto relative" onclick="event.stopPropagation()" style="width: 400px;">
+              <h3 id="popupName-${item.pk}" class="font-bold text-lg mb-2 text-black text-center"></h3>
+
+              <!-- Gray Placeholder (Removed Image) -->
+              <div class="bg-gray-200 flex justify-center items-center overflow-hidden mb-4 w-[100%] h-[100%] mx-auto">
+                <div class="flex justify-center items-center w-full h-full text-gray-500">
+                    <img id="popupImage-${item.pk}" src="" alt="Product Image" class="rounded-lg object-cover w-full h-full" style="aspect-ratio: 1/1; max-width: 100%; max-height: 100%;" />
+                </div>
+              </div>
+
+              <p id="popupQuantity-${item.pk}" class="text-gray-600 text-sm mb-4 text-center"></p>
+              <p id="popupDescription-${item.pk}" class="text-gray-700 mb-4 text-center"></p>
+              <p id="popupPrice-${item.pk}" class="text-gray-900 font-semibold text-center mb-6"></p>
+
+              <!-- Edit and Delete Buttons -->
+              <div class="flex justify-center space-x-4 mb-4">
+                <a href="/edit-product/${item.pk}"  class="edit-button bg-white hover:bg-[#c9c9c9] text-black rounded-full p-2 transition duration-300 shadow-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
+                </a> 
+                <a href="/delete-product/${item.pk}" class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition duration-300 shadow-md">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                </a>
+              </div>
+
+              <!-- Close Button -->
+              <button onclick="closePopup('${item.pk}')" class="absolute top-2 right-2 bg-indigo-400 hover:bg-indigo-600 text-white py-1 px-3 rounded-full font-bold">close</button>
+            </div>
+          </div>
+        </div>
             `;
         });
     }
@@ -146,6 +259,29 @@
     document.getElementById("product_cards").innerHTML = htmlString;
   }
   refreshProducts();
+
+  function openPopup(name, quantity, price, description, imageUrl, productId) {
+    document.getElementById('popupName-' + productId).innerText = name;
+    document.getElementById('popupQuantity-' + productId).innerText = 'Quantity: ' + quantity;
+    document.getElementById('popupDescription-' + productId).innerText = description;
+    document.getElementById('popupPrice-' + productId).innerText = price + ' IDR';
+
+    // Update the image
+    const popupImage = document.getElementById('popupImage-' + productId);
+    if (imageUrl) {
+        popupImage.src = imageUrl;
+        popupImage.alt = name;
+    } else {
+        popupImage.src = '/path/to/placeholder-image.png';  // Fallback if no image is available
+    }
+
+    document.getElementById('productPopup-' + productId).classList.remove('hidden');
+  }
+
+  function closePopup(productId) {
+      document.getElementById('productPopup-' + productId).classList.add('hidden');
+  }
+
 
   function addProduct() {
     fetch("{% url 'main:add_product_ajax' %}", {
@@ -193,6 +329,5 @@
 
   document.getElementById("cancelButton").addEventListener("click", hideModal);
   document.getElementById("closeModalBtn").addEventListener("click", hideModal);
-
 </script>
-{% endblock content %}
+{% endblock content %}s
